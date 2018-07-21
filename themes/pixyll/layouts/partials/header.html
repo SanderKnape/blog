@@ -1,0 +1,12 @@
+<header class="site-header px2 px-responsive">
+  <div class="mt2 wrap">
+    <div class="measure">
+      <a href="{{ .Site.BaseURL }}{{ .Site.LanguagePrefix }}" class="site-title">{{ .Site.Title }}</a>
+      <a href="/about" style='display: none; margin-left: 50px; line-height: 48px; color: #333; float: right;'>About</a>
+      <nav class="site-nav right">
+      {{ partial "navigation.html" . }}
+      </nav>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</header>

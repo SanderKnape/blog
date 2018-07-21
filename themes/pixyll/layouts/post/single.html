@@ -1,0 +1,31 @@
+{{ partial "head.html" . }}
+<div class="site-wrap">
+  {{ partial "header.html" . }}
+  <div class="post p2 p-responsive wrap" role="main">
+    <div class="measure">
+      <div class="post-header mb2">
+        <h1 class="py2">{{ .Title }}</h1>
+        <span class="post-meta">{{ .Date.Format "Jan 2, 2006" }} by {{ .Params.author }}</span><br>
+        {{ $baseurl := .Site.BaseURL }}
+      </div>
+
+      <article class="post-content">
+      <div style="float: right; margin-left: 2rem; background-color: #fafafa; padding: 1rem 1rem 0 1rem">
+        <p><strong>Table of Contents</strong></p>
+        {{.TableOfContents}}
+      </div>
+      {{ .Content }}
+      </article>
+
+      <p class="post-meta">{{ i18n "tags" }}:&nbsp;
+        {{ range $i, $e := .Params.tags }}
+            {{if $i}},&nbsp;{{end}}
+            <a href="{{ $baseurl }}{{ $.Site.LanguagePrefix }}/tags/{{ . }}">{{ . }}</a>
+        {{ end }}
+      </p>
+
+      {{ partial "comments.html" . }}
+    </div>
+  </div>
+</div>
+{{ partial "footer.html" . }}
