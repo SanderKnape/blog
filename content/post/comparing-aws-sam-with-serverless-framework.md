@@ -10,7 +10,7 @@ Serverless applications are everywhere these days. Having been introduced some y
 
 How do you build such applications? Given that you properly like the Infrastructure as Code mindset as much as I do, the question is how to properly specify serverless applications provisioned in AWS in code. Two main options are out there: the Serverless Framework and AWS SAM. Both frameworks allow you to make it easier to build serverless applications.  
 
-In this blog post I'm going to put that to the test. Using both the [serverless framework](https://serverless.com) and [AWS SAM local](https://github.com/awslabs/aws-sam-local), I will build and deploy an application. All source code can be found in my [GitHub repository](https://github.com/SanderKnape/comparing-serverless-and-sam), and using the instructions in the [README](https://github.com/SanderKnape/comparing-serverless-and-sam/README.md) and in this blog post you can provision the application in your own AWS account.  
+In this blog post I'm going to put that to the test. Using both the [serverless framework](https://serverless.com) and [AWS SAM local](https://github.com/awslabs/aws-sam-local), I will build and deploy an application. All source code can be found in my [GitHub repository](https://github.com/SanderKnape/comparing-serverless-and-sam), and using the instructions in the [README](https://github.com/SanderKnape/comparing-serverless-and-sam/blob/master/README.md) and in this blog post you can provision the application in your own AWS account.  
 
 The serverless application we will construct and deploy is architected as follows;  
 
@@ -51,7 +51,7 @@ Another difference is that SAM Local allows you to run Lambda functions locally 
 
 # The stacks
 
-I constructed the above architecture both using the Serverless Framework and with SAM. The YAML files can be found in my [GitHub repository](https://github.com/SanderKnape/comparing-serverless-and-sam): [serverless.yaml](https://github.com/SanderKnape/comparing-serverless-and-sam/serverless.yaml) and [template.yaml](https://github.com/SanderKnape/comparing-serverless-and-sam/template.yaml).  
+I constructed the above architecture both using the Serverless Framework and with SAM. The YAML files can be found in my [GitHub repository](https://github.com/SanderKnape/comparing-serverless-and-sam): [serverless.yaml](https://github.com/SanderKnape/comparing-serverless-and-sam/blob/master/serverless.yaml) and [template.yaml](https://github.com/SanderKnape/comparing-serverless-and-sam/blob/master/template.yaml).  
 
 The obvious difference between the two stacks is the length of both files: the Serverless yaml is significantly larger. This is largely because of a missing feature with IAM permissions (see the IAM comparison below). We also need to specify a little more metadata for the serverless framework to get it running.  
 
