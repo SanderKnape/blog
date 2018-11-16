@@ -6,13 +6,13 @@ draft = false
 tags = ["s3", "cloudformation", "lambda"]
 categories = []
 +++
-Yesterday, AWS announced the release of an important and much-wanted new feature for S3: [blocking the creation of public S3 buckets on an account-level](https://aws.amazon.com/blogs/aws/amazon-s3-block-public-access-another-layer-of-protection-for-your-accounts-and-buckets/). Enough has been written already about open S3 buckets on the internet. Given that it is very simple to create a public S3 bucket, we regurlarly learn about new (big) companies that have exposed privacy-sensitive data to the world through such buckets.
+Yesterday, AWS announced the release of an important and much-wanted new feature for S3: [blocking the creation of public S3 buckets on an account-wide](https://aws.amazon.com/blogs/aws/amazon-s3-block-public-access-another-layer-of-protection-for-your-accounts-and-buckets/). Enough has been written already about open S3 buckets on the internet. Given that it is very simple to create a public S3 bucket, we regularly learn about new (big) companies that have exposed privacy-sensitive data to the world through such buckets.
 
 The confusion is mainly around opening up your bucket to "everyone". Where people expect this to mean "everyone in the AWS account", it actually means "*everyone in the world*".
 
 ![ACL for a public S3 bucket.](/images/public_s3_bucket_acl.png)  
 
-Even though a big warning is visible, it doesn't tell you explicity that "everyone" means "everyone in the world".
+Even though a big warning is visible, it doesn't tell you explicitly that "everyone" means "everyone in the world".
 
 Similarly with S3 bucket policies, granting "everyone" access to your bucket again means the entire world.
 
@@ -26,15 +26,15 @@ While such UI changes certainly help, they are still reactive. While they tell y
 
 I was very happy to read in the announcement that CloudFormation support has been added already for the S3 Bucket resource. However, I didn't see any information regarding account-wide permissions for blocking the creation of public S3 buckets. In this blog post, I'll share how this can be done using the CLI and I will share a CloudFormation custom resource that you can use to block the creation of S3 buckets in code.
 
-# The new S3 API for account-level access control
+# The new S3 API for account-wide access control
 
-As part of the release yesterday, AWS updated their API with new account-level permissions for S3 through the [s3control API](https://docs.aws.amazon.com/cli/latest/reference/s3control/index.html#cli-aws-s3control). This API contains three commands for manipulating the account-level permissions:
+As part of the release yesterday, AWS updated their API with new account-wide permissions for S3 through the [s3control API](https://docs.aws.amazon.com/cli/latest/reference/s3control/index.html#cli-aws-s3control). This API contains three commands for manipulating the account-wide permissions:
 
 * delete-public-access-block
 * get-public-access-block
 * put-public-access-block
 
-Given an AWS account where the account-level access controls have not been changed yet, the `get-public-access-block` command will return these values:
+Given an AWS account where the account-wide access controls have not been changed yet, the `get-public-access-block` command will return these values:
 
 ```bash
 aws s3control get-public-access-block --account-id [youraccountid]
