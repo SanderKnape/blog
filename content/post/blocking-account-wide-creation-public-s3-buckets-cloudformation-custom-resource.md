@@ -122,7 +122,8 @@ Resources:
           Statement:
             - Effect: Allow
               Action:
-                - s3:* # See comment below
+                - s3:GetAccountPublicAccessBlock
+                - s3:PutAccountPublicAccessBlock
               Resource: "*"
 
 Outputs:
@@ -131,7 +132,7 @@ Outputs:
     Export:
       Name: "custom-resource-block-public-s3-buckets"
 ```
-> At the time of writing, I have not yet been able to find the specific IAM permissions needed to execute the `put_public_access_block` and the `delete_public_access_block` API calls. I have of course tried the obvious (`s3:DeletePublicAccessBlock` and `s3:PutPublicAccessBlock`), but these do not work. As it works with `s3:*`, I have decided to use this for now. As this is definitely not following the security least-privilege principle, I would very much like to replace this with the proper permissions. If you happen to know what permissions to place here, please leave a comment below or send me a message on [Twitter](https://twitter.com/SanderKnape).
+> Update 2018-11-20: Thanks to [@chuckm](https://twitter.com/chuckm) for informing me about [this documentation](https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html#access-control-block-public-access-permissions) regarding the minimal permissions required to use this feature. I have updated the code in GitHub and in this blog post. ~~At the time of writing, I have not yet been able to find the specific IAM permissions needed to execute the `put_public_access_block` and the `delete_public_access_block` API calls. I have of course tried the obvious (`s3:DeletePublicAccessBlock` and `s3:PutPublicAccessBlock`), but these do not work. As it works with `s3:*`, I have decided to use this for now. As this is definitely not following the security least-privilege principle, I would very much like to replace this with the proper permissions. If you happen to know what permissions to place here, please leave a comment below or send me a message on [Twitter](https://twitter.com/SanderKnape).~~
 
 The following stack shows his this resource can now be used:
 
