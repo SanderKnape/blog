@@ -172,7 +172,71 @@ export class ServerlessCdkStack extends cdk.Stack {
 
 In the last few lines we add some permissions to both Lambda functions so that they can put messages in respectively SQS and DynamoDB. However, all the other permissions are automatically configured by the CDK using the least-privilege principle. It's import to realize that the objects (such as the `Function` object) we use are not 1-to-1 mappings to a CloudFormation resource. It's a higher-level resource - the CDK calls this a "Construct" - thas makes it easy to create a Lambda function by setting sane defaults for most properties. You can also use objects that directly map to CloudFormation resources (e.g. the `CfnResource` function), but in general you shouldn't need these resources.
 
-In order to execute this code, make sure that the `package.json` files contains the following dependencies:
+Next, create a new directory called `handlers` in the root directory of the project. That is where we will store the code for the two Lambda functions. In this directory, create two directories: `publish` and `subscribe`. In both these directories, create a file called `index.js`. The directory structure should now look like this:
+
+![AWS CDK Lambda](/images/cdk_serverless_directory_structure.png)
+
+```
+handlers
+-- publish
+---- index.js
+-- subscribe
+---- index.js
+```
+
+In the `index.js` for the `publish` function, paste the following code:
+
+```javascript
+const aws = require('aws-sdk');
+const sqs = new aws.SQS();
+
+exports.handler = async (event) => {
+    const randomInt = Math.floor(Math.random() * Math.floor(10000)).toString();
+
+    const params = {
+        QueueUrl: process.env.QUEUE_URL,
+        MessageBody: randomInt
+    };
+
+    await sqs.sendMessage(params).promise();
+
+    return {
+        statusCode: 200,
+        body: `Successfully pushed message ${randomInt}!!`
+    }
+}
+```
+
+In the `index.js` for the `subscribe` function, paste the following code:
+
+```javascript
+const aws = require('aws-sdk');
+const dynamodb = new aws.DynamoDB();
+
+exports.handler = async (event) => {
+    for (const record of event.Records) {
+        const id = record.body;
+        console.log(id);
+
+        const params = {
+            TableName: process.env.TABLE_NAME,
+            Item: {
+                "id": {
+                    N: id
+                }
+            }
+        }
+
+        await dynamodb.putItem(params).promise();
+    }
+
+    return;
+}
+```
+
+Both functions are pretty self-explanatory. I didn't add any error handling and such to keep the code as simple as possible.
+
+In order to execute the CDK code, make sure that the `package.json` files contains the following dependencies:
 
 ```json
 "dependencies": {
