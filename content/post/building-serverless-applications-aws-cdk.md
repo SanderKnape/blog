@@ -174,8 +174,6 @@ In the last few lines we add some permissions to both Lambda functions so that t
 
 Next, create a new directory called `handlers` in the root directory of the project. That is where we will store the code for the two Lambda functions. In this directory, create two directories: `publish` and `subscribe`. In both these directories, create a file called `index.js`. The directory structure should now look like this:
 
-![AWS CDK Lambda](/images/cdk_serverless_directory_structure.png)
-
 ```
 handlers
 -- publish
