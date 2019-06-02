@@ -109,7 +109,6 @@ import cdk = require('@aws-cdk/cdk');
 import { Function, Runtime, Code } from '@aws-cdk/aws-lambda';
 import { SqsEventSource } from '@aws-cdk/aws-lambda-event-sources';
 import { RestApi, LambdaIntegration } from '@aws-cdk/aws-apigateway';
-import { PolicyStatement, Policy, PolicyStatementEffect } from '@aws-cdk/aws-iam';
 import { Table, AttributeType } from '@aws-cdk/aws-dynamodb';
 import { Queue } from '@aws-cdk/aws-sqs';
 
@@ -155,19 +154,27 @@ export class ServerlessCdkStack extends cdk.Stack {
       ]
     });
 
-    publishFunction.role!.attachInlinePolicy(new Policy(this, 'lambdaPublishToSqsPolicy', {
-      statements: [
-        new PolicyStatement(PolicyStatementEffect.Allow).addAction('sqs:SendMessage').addResource(queue.queueArn)
-      ]
-    }));
+    queue.grantSendMessages(publishFunction);
+    table.grant(subscribeFunction, "dynamodb:PutItem");
 
-    subscribeFunction.role!.attachInlinePolicy(new Policy(this, 'lambdaWriteToDynamoDbPolicy', {
-      statements: [
-        new PolicyStatement(PolicyStatementEffect.Allow).addAction('dynamodb:PutItem').addResource(table.tableArn)
-      ]
-    }));
+    // EDIT June 2th, 2019: after feedback from the AWS CDK team I learned about the above
+    // "grant" methods to extends the permissions of the Lambda functions. It's much more
+    // readable than the earlier code I had which you can see below.
+
+    // publishFunction.role!.attachInlinePolicy(new Policy(this, 'lambdaPublishToSqsPolicy', {
+    //   statements: [
+    //     new PolicyStatement(PolicyStatementEffect.Allow).addAction('sqs:SendMessage').addResource(queue.queueArn)
+    //   ]
+    // }));
+
+    // subscribeFunction.role!.attachInlinePolicy(new Policy(this, 'lambdaWriteToDynamoDbPolicy', {
+    //   statements: [
+    //     new PolicyStatement(PolicyStatementEffect.Allow).addAction('dynamodb:PutItem').addResource(table.tableArn)
+    //   ]
+    // }));
   }
 }
+
 ```
 
 In the last few lines we add some permissions to both Lambda functions so that they can put messages in respectively SQS and DynamoDB. However, all the other permissions are automatically configured by the CDK using the least-privilege principle. It's import to realize that the objects (such as the `Function` object) we use are not 1-to-1 mappings to a CloudFormation resource. It's a higher-level resource - the CDK calls this a "Construct" - thas makes it easy to create a Lambda function by setting sane defaults for most properties. You can also use objects that directly map to CloudFormation resources (e.g. the `CfnResource` function), but in general you shouldn't need these resources.
