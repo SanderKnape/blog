@@ -106,7 +106,7 @@ My biggest advice is to split up your stacks. The soft limit for the number of s
 
 There is no way to move your CloudFormation resources to other stacks, nor to rename them. Once a resource is defined in a stack, the only way to get it in a different stack is by fully re-creating the resource.  
 
-For some resources, this is fine. Take a CodeDeploy application for example: you can create a new one in a new stack and remove the old one (though you will loose the deployment history). If you want to move a load balancer, you also can create it in a new stack, point your CNAME/EIP/e.t.c. to it and remove the old one after a little while. Still relatively easy.  
+For some resources, this is fine. Take a CodeDeploy application for example: you can create a new one in a new stack and remove the old one (though you will lose the deployment history). If you want to move a load balancer, you also can create it in a new stack, point your CNAME/EIP/e.t.c. to it and remove the old one after a little while. Still relatively easy.  
 
 It gets harder when we start talking about VPCs, subnets or S3 buckets with large amounts of data in them. You can not remove a VPCs or subnets while there are still resources in it. The only way to move an S3 bucket is by creating a new one and syncing all the old data to the new data.  
 
@@ -135,7 +135,7 @@ Luckily this one shouldn't be that big-of-a-deal in most cases, but it's certain
 
 ## Upgrade your editor
 
-In your editor, CloudFormation is just YAML. Especially with big files, you might loose the overview and it's easy to make simple mistakes such as wrong indentation. Worst case you'll notice only after you deploy your stack, at which point CloudFormation will tell you something is wrong. Your stack will rollback, resources will be removed/re-added and before you know it, you're 10 minutes further. I always recommend to [shift left](https://en.wikipedia.org/wiki/Shift_left_testing) this kind of feedback in your process. Fail often, fail early.  
+In your editor, CloudFormation is just YAML. Especially with big files, you might lose the overview and it's easy to make simple mistakes such as wrong indentation. Worst case you'll notice only after you deploy your stack, at which point CloudFormation will tell you something is wrong. Your stack will rollback, resources will be removed/re-added and before you know it, you're 10 minutes further. I always recommend to [shift left](https://en.wikipedia.org/wiki/Shift_left_testing) this kind of feedback in your process. Fail often, fail early.  
 
 Luckily, there are some good resources out there that can help you with this. Friend Matthew Hodgkins recently wrote a blog post about [Upping your CloudFormation with Visual Studio Code](https://hodgkins.io/up-your-cloudformation-game-with-vscode). If you're using another editor, this post is also definitely worth checking out as most tips will also work for other editors. He mainly discusses installing several plugins to make working with YAML easier and has a great tip regarding easy access to CloudFormation documentation.  
 
