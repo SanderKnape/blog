@@ -286,7 +286,7 @@ deploy:
 
 We use an existing Docker image that already has `kubectl` installed. We then configure the cluster, user and context with the environment variables we set earlier so that we can connect to the cluster. When setting the cluster we can unfortunately not directly set the `certificate-authority-data` as no flag exists for it. There is a [GitHub issue](https://github.com/kubernetes/kubectl/issues/501) open for this. We therefore set the CA data using an additional command.
 
-We also perform a `sed` to replace the <VERSION> with the short SHA of the Docker image that we just pushed to the Docker registry. This may feel a little dirty/hacky; I'll share a different way to do this in a future blog post using [Helm](https://helm.sh/).
+We also perform a `sed` to replace the <VERSION> with the short SHA of the Docker image that we just pushed to the Docker registry. This may feel a little dirty/hacky; I'll share a different way to do this in a future blog post using [Helm](https://helm.sh/). (UPDATE: check out my new blog post on [improving Kubernetes deployments with Helm](https://sanderknape.com/2019/03/improving-kubernetes-deployments-helm/)).
 
 Finally, higher up in the file find the `stages` array. Add `deploy` after `build`.
 
