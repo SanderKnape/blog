@@ -1,7 +1,7 @@
 +++
 title = "Installing private Git repositories through npm install in Docker"
 author = "Sander Knape"
-date = 2019-06-14T10:39:02+02:00
+date = 2019-06-17T13:30:02+02:00
 draft = false
 tags = ["docker", "git", "npm", "ssh", "buildkit"]
 categories = []
