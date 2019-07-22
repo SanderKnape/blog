@@ -13,9 +13,9 @@ Of course, fully opening up the permissions to create these resources in the clo
 
 It is not uncommon for organizations to limit these risks by having every resource request validated by a specific team. This may be an ops team, a DevOps team, a security team, architects, or a platform team. Name it whatever you want. What it comes down to is that someone is in the middle of the development lifecycle for developers who want to build features. However, the gap between dev and ops has severely shrunk in the last few years. How is a queue different these days from an additional function in your code? Especially if that queue is provisioned through Infrastructure as Code, it's all code in the end.
 
-I believe that it is possible these days to grant developers full autonomy in the Cloud. A team - I choose to call it a platform team - can build a foundation for shared resources that includes built-in reasonable boundaries to enforce constraints to prevent issues with costs and security.
+I believe that it is possible these days to grant developers full autonomy in the Cloud. A team - I choose to call it a platform team - can build a foundation for shared resources. This platform includes built-in reasonable boundaries to enforce constraints to prevent or detect issues with costs and security.
 
-The goal of this platform team should be to empower developers to autonomously build their applications in the Cloud. This platform team does not need to be directly in the middle of their development lifecycle. Through automation, security risks are either removed or brought to attention. And it gets better: these risks can be mitigated before they even hit the environment.
+The goal of this platform team should be to empower developers to autonomously build their applications in the Cloud. This platform team does not need to be directly in the middle of their development lifecycle. Through automation, risks are either removed or brought to attention. And it gets better: these risks can be mitigated before they even hit the environment.
 
 I have had the privilege to build such platforms in Amazon Web Services (AWS) in the last few years. In this blog post I'll go through some of the tools and processes that are available to grant this autonomy.
 
@@ -54,7 +54,7 @@ In some cases you not only want to prevent data being available to the big bad o
 
 It's possible to set this up when there are multiple (whether it's a few, dozens or hundreds) of teams in a single AWS account. You can ensure that the different teams get different IAM roles assigned. These will allow you for example to manage and see only secrets/databases that are prefixed with your team name. However, it some point it can just become annoying. With dozens or hundreds of teams you will reach limits within the AWS account. When you login to the console, your resources are mixed with resources from many different other teams.
 
-Instead, you can make multiple accounts, for example one per application, one per team or some other logical way depending on your organization. Just be careful not to mirror it too much with the organization. Before you know it there is a (either big or small) restructuring of the team setup, and your AWS setup is now out of date. Aligning this may take a lot of effort.
+Instead, you can make multiple accounts. You may create one per application, one per team or some other logical way depending on your organization. Just be careful not to mirror it too much with the organization. Before you know it there is a (either big or small) restructuring of the team setup, and your AWS setup is now out of date. Aligning this may take a lot of effort.
 
 For a long time a challenge with multiple accounts was network connectivity. As each account has its own VPC, you would need to set up VPC peering to each VPC. With dozens of accounts this would add a lot of complexity. Instead, you can now use [VPC Sharing](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html). In a single account (perhaps owned by a central networking/platform team) you create a VPC, and share this VPC with the other accounts in which developers deploy their applications. You now have the benefit of multiple, isolated accounts, as well as easy networking connectivity between the various applications.
 
@@ -64,11 +64,11 @@ To learn more about these relatively new networking features, check out [this vi
 
 # 4. IAM Permissions Boundary
 
-Using [AWS IAM](https://aws.amazon.com/iam/) you lock down your environment by only allowing your deployment pipelines to do certain things. If you don't want to have any virtual machines deployed in certain regions, you simply prevent them by not allowing it in the IAM policy attached to the deployment pipeline. 
+Using [AWS IAM](https://aws.amazon.com/iam/) you lock down your environment by only allowing your deployment pipelines to do certain things. If you don't want to have any virtual machines deployed in certain regions, you simply prevent them from being created by not allowing it in the IAM policy attached to the deployment pipeline. 
 
 However, these deployment pipelines can probably create additional IAM resources. You may want to deploy an EC2 instance with an IAM role attached. What prevents you from giving that IAM role admin permissions, and then being able to do anything you want from that instance?
 
-That's where [permissions boundaries](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) come in. A permissions boundary is just another IAM policy that is attached to an IAM entity (a role, user or group). The permissons boundary defines the _maximum permissions_ which that entity will have. If the entity has fewer permissions configured, it only has those permissions. If it configures more permissions than allowed within the boundary, the permissions are capped to whatever is configured in the boundary.
+That's where [permissions boundaries](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) come in. A permissions boundary is just another IAM policy that is attached to an IAM entity (a role, user or group). The permissions boundary defines the _maximum permissions_ which that entity can have. If the entity has fewer permissions configured, it only has those permissions. If it configures more permissions than allowed within the boundary, the permissions are capped to whatever is configured in the boundary.
 
 To enforce that any IAM resource created through your deployment pipelines have the permissions boundary attached, you can use the `Condition` statement within the IAM policy to do so (this example is copied from the documentation referenced above):
 
