@@ -106,12 +106,12 @@ If you use CloudFormation for IaC, definitely have a look at the [CloudFormation
 
 What is even better is that you can extend the linter with your own company policies. This, combined with the [editor plugins](https://github.com/aws-cloudformation/cfn-python-lint#editor-plugins) means that developers can already get feedback on violations the moment they write it in their editor. As soon as they create a security group rule that opens up SSH to the world, that line will get a red underline. In terms of "shift left" and "early feedback", this is as left and early as you can get it.
 
-If you are using Terraform Enterprise you can use [Sentinel](https://www.terraform.io/docs/enterprise/sentinel/import/index.html). If you are using the free version you can take a look at [conftest](https://github.com/instrumenta/conftest). I haven't yet seen a way to get feedback directly in the editor, but at least you can run a scan in the pull request. For example, the following will scan a Terraform plan for the existence of permission boundaries:
+If you are using Terraform Enterprise you can use [Sentinel](https://www.terraform.io/docs/enterprise/sentinel/import/index.html). If you are using the free version you can take a look at [conftest](https://github.com/instrumenta/conftest). I haven't yet seen a way to get feedback directly in the editor, but at least you can run a scan in the pull request. For example, the following will scan a Terraform plan for the existence of permissions boundaries:
 
 ```
 package main
 
-permission_boundary_arn = "arn:aws:iam::0123456789:policy/permission-boundary-policy"
+permissions_boundary_arn = "arn:aws:iam::0123456789:policy/permissions-boundary-policy"
 
 iam_resources = [
   "aws_iam_user",
@@ -121,9 +121,9 @@ iam_resources = [
 
 deny[msg] {
   input.planned_values.root_module.resources[i].type = iam_resources[j]
-  not input.planned_values.root_module.resources[i].values.permissions_boundary = permission_boundary_arn
+  not input.planned_values.root_module.resources[i].values.permissions_boundary = permissions_boundary_arn
 
-  msg = sprintf("IAM resource '%s' must have 'permission_boundary' property set to '%s'", [input.planned_values.root_module.resources[i].address, permission_boundary_arn])
+  msg = sprintf("IAM resource '%s' must have 'permissions_boundary' property set to '%s'", [input.planned_values.root_module.resources[i].address, permissions_boundary_arn])
 }
 ```
 
