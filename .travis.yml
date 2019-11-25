@@ -5,7 +5,7 @@ install:
   - sudo dpkg -i hugo*.deb
 script: hugo
 before_deploy:
-  - pyenv local 3.6
+  - pyenv local 3.7.1
   - pip install awscli --user
 deploy:
   provider: script

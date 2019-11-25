@@ -1,7 +1,7 @@
 +++
 title = "Roundup of the most important pre-re:Invent 2019 releases - so far"
 author = "Sander Knape"
-date = 2019-11-24T16:04:24+02:00
+date = 2019-11-25T11:04:24+02:00
 draft = false
 tags = ["aws", "kubernetes", "eks", "dynamodb", "sqs", "fargate", "cloudformation", "cloudwatch", "iam"]
 categories = []
