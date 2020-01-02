@@ -1,0 +1,28 @@
+name: publish
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+      - name: install dependencies
+        run: |
+          wget https://github.com/gohugoio/hugo/releases/download/v0.44/hugo_0.44_Linux-64bit.deb
+          sudo dpkg -i hugo*.deb
+          pip install awscli
+      - name: publish
+        run: |
+          hugo
+          aws s3 sync public/ s3://sanderknape.com --delete
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
