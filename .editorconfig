@@ -8,5 +8,5 @@ trim_trailing_whitespace = true
 end_of_line = lf
 charset = utf-8
 
-[*.yaml, *.yml]
+[*.yaml,*.yml]
 indent_size = 2
