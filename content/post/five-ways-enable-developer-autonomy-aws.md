@@ -19,7 +19,7 @@ The goal of this platform team should be to empower developers to autonomously b
 
 I have had the privilege to build such platforms in Amazon Web Services (AWS) in the last few years. In this blog post I'll go through some of the tools and processes that are available to grant this autonomy.
 
-# 1. Preventing public S3 buckets
+## 1. Preventing public S3 buckets
 
 There are many examples of (big) companies leaking (sensitive) data through public S3 buckets. Many companies have policies these days to disallow the use of public buckets. If you do want to make data (publicly) available, you should either put [CloudFront](https://aws.amazon.com/cloudfront/) in front of it or use [Presigned Urls](https://docs.aws.amazon.com/AmazonS3/latest/dev/PresignedUrlUploadObject.html).
 
@@ -27,7 +27,7 @@ Since last year it is now possible to [fully block public access](https://docs.a
 
 Check out the referenced documentation to learn how to switch on this setting, and be sure that none of your buckets are open to the world. It's currently not yet possible to enable this configuration through CloudFormation. I wrote a blog post earlier that allows you to do this [with a custom resource](https://sanderknape.com/2018/11/blocking-account-wide-creation-public-s3-buckets-cloudformation-custom-resource/).
 
-# 2. AWS Config
+## 2. AWS Config
 
 [AWS Config](https://aws.amazon.com/config/) is the de facto tool within AWS to enforce your company policy onto all AWS resources. It allows you setup certain rules for specific resources and have AWS Config take action for any resources that don't follow these rules. An action can be to send a notification for someone to act, or AWS Config may remove the resource immediately.
 
@@ -40,7 +40,7 @@ In general there are two ways to deal with resources that violate policies:
 
 In addition, you can use AWS Config to enforce the use of certain tags. This is typically required to get insights into the resources different teams/applications are using. This way, you can get insights into the costs per team/application. Check out this AWS blog to learn how to [enforce tags with AWS Config](https://aws.amazon.com/blogs/devops/aws-config-checking-for-compliance-with-new-managed-rule-options/).
 
-## Using other tools
+### Using other tools
 
 AWS Config is just one of the tools that can enforce and provide insights on policies in AWS. Tools like [CloudHealth](https://www.cloudhealthtech.com/) and [CloudCheckr](https://cloudcheckr.com/) provide similar functionalities. In addition, these tools support additional features such as generating cost insights and providing insight into multiple Cloud providers. Depending on your use case they may be more relevant for you compared with AWS Config.
 
@@ -48,7 +48,7 @@ One tool I've personally enjoyed using is [CloudSploit](https://cloudsploit.com/
 
 I would personally recommend running an external tool in addition to AWS Config. These tools have more built-in scans than AWS Config and you therefore have to write less custom checks yourself. I also appreciate the idea of having an external entity scan my environment, instead of me writing my own rules that are potentially flawed.
 
-# 3. Multiple accounts and shared networking
+## 3. Multiple accounts and shared networking
 
 In some cases you not only want to prevent data being available to the big bad outer world, but to other applications or entities within the same organization. You may have stored passwords in [Secrets Manager](https://aws.amazon.com/secrets-manager/), or sensitive data in [DynamoDB](https://aws.amazon.com/dynamodb/). And only the team that has build this should be allowed to access this.
 
@@ -58,13 +58,13 @@ Instead, you can make multiple accounts, for example one per application, one pe
 
 For a long time a challenge with multiple accounts was network connectivity. As each account has its own VPC, you would need to set up VPC peering to each VPC. With dozens of accounts this would add a lot of complexity. Instead, you can now use [VPC Sharing](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html). In a single account (perhaps owned by a central networking/platform team) you create a VPC, and share this VPC with the other accounts in which developers deploy their applications. You now have the benefit of multiple, isolated accounts, as well as easy networking connectivity between the various applications.
 
-Another option is to use [Transit Gateway](https://aws.amazon.com/transit-gateway/). If you do have multiple VPCs in different accounts between which you want to enable private networking, you can connect all these VPCs to this single gateway. From a central location you can then easily configure the exact routing rules that you need, and only access between the VPCs that need this. Through the same mechanisms as described in this blog post you can then enable the development teams to manage this configuration themselves. 
+Another option is to use [Transit Gateway](https://aws.amazon.com/transit-gateway/). If you do have multiple VPCs in different accounts between which you want to enable private networking, you can connect all these VPCs to this single gateway. From a central location you can then easily configure the exact routing rules that you need, and only access between the VPCs that need this. Through the same mechanisms as described in this blog post you can then enable the development teams to manage this configuration themselves.
 
 To learn more about these relatively new networking features, check out [this video](https://www.youtube.com/watch?v=fnxXNZdf6ew) from re:Invent last year.
 
-# 4. IAM Permissions Boundary
+## 4. IAM Permissions Boundary
 
-Using [AWS IAM](https://aws.amazon.com/iam/) you lock down your environment by only allowing your deployment pipelines to do certain things. If you don't want to have any virtual machines deployed in certain regions, you simply prevent them by not allowing it in the IAM policy attached to the deployment pipeline. 
+Using [AWS IAM](https://aws.amazon.com/iam/) you lock down your environment by only allowing your deployment pipelines to do certain things. If you don't want to have any virtual machines deployed in certain regions, you simply prevent them by not allowing it in the IAM policy attached to the deployment pipeline.
 
 However, these deployment pipelines can probably create additional IAM resources. You may want to deploy an EC2 instance with an IAM role attached. What prevents you from giving that IAM role admin permissions, and then being able to do anything you want from that instance?
 
@@ -94,11 +94,11 @@ To enforce that any IAM resource created through your deployment pipelines have 
 
 To learn more about permissions boundaries I would definitely recommend watching [this video](https://www.youtube.com/watch?v=eVNvjQ0wr84) from re:Inforce. It's a fun watch and shows a hands-on example of how to setup permissions boundaries.
 
-# 5. Policies in the pipeline
+## 5. Policies in the pipeline
 
 These days it's very common to write Infrastructure as Code (IaC) to provision (cloud) environments. One of the advantages of using IaC is that you have specified your environment in a formalized, structured way. What this means is that you can run scans on these specifications _before_ they are deployed to the environment. Instead of _reacting_ to configuration changes with a tool like AWS Config, you _proactively_ prevent introducing policy violations by catching them before they are deployed.
 
-Looking at your environment from a platform perspective, the sum of the boundaries that you set in AWS essentially define a "contract" to your developers on how they may use the platform. By scanning the IaC as part of their pipelines you have formalized that contract and prevent them for violating it before it gets in. 
+Looking at your environment from a platform perspective, the sum of the boundaries that you set in AWS essentially define a "contract" to your developers on how they may use the platform. By scanning the IaC as part of their pipelines you have formalized that contract and prevent them for violating it before it gets in.
 
 In addition, this mechanism provides early feedback. It's much more convenient to learn you have to change something as feedback within a pull request. Or even better: directly in your editor.
 
@@ -127,7 +127,7 @@ deny[msg] {
 }
 ```
 
-# Conclusion
+## Conclusion
 
 The combination of the tools above allow you to provide developer autonomy in AWS. In addition, it does so in a pretty developer-friendly way. Especially when providing early feedback you can help your developers quickly learn they are configuring something that falls outside of the company policies. Make sure you provide documentation that explains exactly why these company policy are setup. I believe that providing this autonomy to developers should be the main goal for any platform team. The development teams can build their applications faster, and the platform team has more focus to work on larger projects instead of constantly being distracted by developers who need their help to get something done.
 
