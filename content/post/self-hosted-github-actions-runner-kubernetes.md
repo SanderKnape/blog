@@ -129,7 +129,7 @@ spec:
           value: your-organization
         - name: GITHUB_REPOSITORY
           value: your-repository
-        - name: RUNNER_TOKEN # stored separately in a Kubernetes Secret
+        - name: GITHUB_PAT # stored separately in a Kubernetes Secret
           valueFrom:
             secretKeyRef:
               name: my-secret
