@@ -46,7 +46,7 @@ You should now be able to clone your private repository through SSH with the fol
 
 `git clone git@github.com:SanderKnape/ssh-test`
 
-Of course, change the repository owner and name to your own private Git repository. 
+Of course, change the repository owner and name to your own private Git repository.
 
 ### An NPM project that has a dependency on the private repository
 
@@ -78,10 +78,10 @@ These new features are currently available under an `experimental` flag. We are 
 First of all, the `DOCKER_BUILDKIT=1` flag enables the use of the new features. You can also add the following to the `/etc/docker/daemon.json` file so that you don't always need to type this part:
 
 ```json
-{ 
-    "features": { 
-        "buildkit": true 
-    } 
+{
+    "features": {
+        "buildkit": true
+    }
 }
 ```
 
@@ -132,7 +132,7 @@ With `ARG SSH_KEY` we tell the builder that an environment variable will be pass
 We now run `docker build` a little different. First, create a base64-encoded version of your key as follows:
 
 ```bash
-key=$(echo ~/.ssh/github | base64)
+key=$(cat ~/.ssh/github | base64)
 ```
 
 Now, we pass this key to the Docker builder:
