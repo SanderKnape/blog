@@ -1,7 +1,7 @@
 +++
 title = "Deploy your pull requests with GitHub Actions and GitHub Deployments"
 author = "Sander Knape"
-date = 2020-05-06T14:49:31+02:00
+date = 2020-05-06T12:49:31+02:00
 draft = false
 tags = ["ci/cd", "github", "actions"]
 categories = []
