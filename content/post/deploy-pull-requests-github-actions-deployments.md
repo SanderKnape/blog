@@ -33,8 +33,6 @@ Let's get started!
 
 The full workflow is in [my GitHub repository](https://github.com/SanderKnape/pr-deployments/blob/master/.github/workflows/pr-deployment.yaml) and a tad too large to fully paste here. Instead, I'll go over all the steps and explain anything noteworthy.
 
-You can easily see which branch is currently deployed to the `dev` environment. There are also links available to the build log and to the actual environment.
-
 ### Check for the correct comment
 
 The workflow is triggered by commenting on a pull request. The following GitHub Action event is used to achieve this:
