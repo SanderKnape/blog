@@ -17,7 +17,7 @@ The only exception here is when [mounting configuration to volumes](https://kube
 
 Interestingly enough, a [GitHub issue](https://github.com/kubernetes/kubernetes/issues/22368) has been open regarding this issue since 2016. Almost 2.5 years later there is still no built-in solution in Kubernetes.
 
-# Potential solutions
+## Potential solutions
 
 Of course the Kubernetes community is creative enough to come up with solutions to solve this drawback. One such solution was [recently shared by The New Stack](https://thenewstack.io/solving-kubernetes-configuration-woes-with-a-custom-controller/), who have created a Controller that continually tracks changes to ConfigMaps. It keeps a list of which Deployments use what ConfigMaps, and ensure that pods are recreated when a used ConfigMap is changed. This project can be found in [GitHub](https://github.com/pusher/wave).
 
@@ -33,7 +33,7 @@ In the example by Matt, a simple script is used that generates the hash and writ
 
 Things can be made a little simpler when using [Helm](https://helm.sh/). Let's look into this next.
 
-# Jackpot?
+## Jackpot?
 
 The final solution we'll discuss - and the one that is the most feasible to me - is especially interesting when you are already using Helm. Documented as a [tip & trick](https://github.com/helm/helm/blob/master/docs/charts_tips_and_tricks.md#automatically-roll-deployments-when-configmaps-or-secrets-change) when using Helm, the method that I described previously can easily be done within Helm. Check out the following example script:
 
@@ -50,7 +50,7 @@ As part of the [Helm templating language](https://helm.sh/docs/chart_template_gu
 
 The advantage compared to the previous solution is that no additional scripting is required. Now when reading the YAML template, the logic that is executed is clearly and explicitly visible. With the other method the `checksum/config` annotation would either be a placeholder or it would not exist at all. That is certainly more confusing to understand when reading the template for the first time.
 
-# Conclusion
+## Conclusion
 
 I'm surprised to see that a relatively simple process - a configuration change - is not yet fully standardized within the Kubernetes ecosystem. Considering that the ConfigMap is essentially a dependency for a Pod, it would make sense to me that a change of that ConfigMap could optionally trigger a restart of any Pods that are using it.
 

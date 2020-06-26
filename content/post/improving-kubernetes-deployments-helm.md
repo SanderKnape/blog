@@ -33,7 +33,7 @@ The alternative of simply using `latest` would cause several issues. For example
 
 However, as I also mentioned in that blog post, I'm not too happy with having to use `sed` to replace the version into the deployment file. To me this is a sign that I'm either doing something that I'm not supposed to do, or that a feature is missing. As I'm following a best practice of not using the `latest` tag, I'm pretty sure that this is an example of the latter situation.
 
-# Helm
+## Helm
 
 [Helm](https://helm.sh) is a package manager for Kubernetes. It can deploy multiple Kubernetes files and resources as a single package with a single lifecycle. This can simply be a set of resources distributed to different files (e.g. `deployment.yaml`, `service.yaml` etc.) or potentially multiple micro-services that together form an application.
 
