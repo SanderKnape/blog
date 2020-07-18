@@ -17,13 +17,15 @@
       {{ .Content }}
       </article>
 
+      <p><strong>Get in touch! Follow me on Twitter: <a href='https://twitter.com/SanderKnape'>@SanderKnape</a>.</strong></p><a href="https://twitter.com/SanderKnape?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @SanderKnape</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      <hr />
+
       <p class="post-meta">{{ i18n "tags" }}:&nbsp;
         {{ range $i, $e := .Params.tags }}
             {{if $i}},&nbsp;{{end}}
             <a href="{{ $baseurl }}{{ $.Site.LanguagePrefix }}/tags/{{ . }}">{{ . }}</a>
         {{ end }}
       </p>
-
       {{ partial "comments.html" . }}
     </div>
   </div>
