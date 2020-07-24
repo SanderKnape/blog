@@ -1,18 +1,10 @@
-+++
-title = "Installing private Git repositories through npm install in Docker"
-author = "Sander Knape"
-date = 2019-06-17T13:30:02+02:00
-draft = false
-tags = ["docker", "git", "npm", "ssh", "buildkit"]
-categories = []
-+++
 How do you properly use an SSH key in a Dockerfile? There are many ways to do it, including many ways to do it wrong. What you will want to prevent is that your ssh key ends up in one of your intermediate images or layers. These are the layers that Docker creates with pretty much every command in your Dockerfile. You may think that you properly clean up your secrets later in the Dockerfile, but the secret will then still be available in one of these layers.
 
-This is especially problematic when you build your Docker images in a (SaaS) CI/CD tool that supports caching. As the cache is uploaded to the system of your provider, it may very well happen that your secret ands up plain-text on their servers.
+This is especially problematic when you build your Docker images in a (SaaS) CI/CD tool that supports caching. As the cache is uploaded to the system of your provider, it may very well happen that your secret ends up plain-text on their servers.
 
 If you want to learn more about these layers, be sure to check out this [great post that explains much more](https://medium.com/@jessgreb01/digging-into-docker-layers-c22f948ed612).
 
-How then do you properly use secrets in your Dockerfile? In this blog post we'll look into a common use case: downloading private git repositories through an `npm install`. We'll dive into two different methods to tackle this in a way that we not expose our secrets in our Docker layers.
+How then do you properly use secrets in your Dockerfile? In this blog post, we'll look into a common use case: downloading private git repositories through an `npm install`. We'll dive into two different methods to tackle this in a way that we do not expose our secrets in our Docker layers.
 
 In this post I'll use a private repository on GitHub as an example. Any other git provider will however also work with this approach.
 
@@ -26,7 +18,7 @@ Let's first get some prerequisites set up before we dive into the two methods.
 
 Testing how to install a private git repository is of course pretty hard without a private git repository. Therefore, make sure you spin one up if you don't already have one. Keep in mind that you can create a free private repository on GitHub since [the beginning of this year](https://github.blog/2019-01-07-new-year-new-github/).
 
-Also, be sure this repository at least contains a `package.json` file with at least an empty object `{}` as its contents. Otherwise the `npm install` that we run later won't recognize this is a valid NPM repository.
+Also, be sure this repository at least contains a `package.json` file with at least an empty object `{}` as its contents. Otherwise, the `npm install` that we run later won't recognize this is a valid NPM repository.
 
 ### SSH key
 
@@ -40,7 +32,7 @@ Host github.com
   IdentityFile ~/.ssh/github
 ```
 
-Be sure to replace the name of the key with the name that you have choosen.
+Be sure to replace the name of the key with the name that you have chosen.
 
 You should now be able to clone your private repository through SSH with the following command:
 
@@ -63,19 +55,19 @@ You need a NodeJS project with a `package.json` that has the private git reposit
 }
 ```
 
-Again, be sure to change the git repository to your own. Now, run `npm install`, and the repository should succesfully download.
+Again, be sure to change the git repository to your own. Now, run `npm install`, and the repository should successfully download.
 
 With all of this setup, let's see two different methods for how we can install this private git repository with `npm install` in a Dockerfile.
 
 ## Docker Buildkit
 
-The first method uses the [Docker Buildkit](https://docs.docker.com/develop/develop-images/build_enhancements/). This is a relatively new way for building Docker images with advantages such as better performance and more features. One of those new features is the `--ssh` flag, which allows you to forward your SSH agent to the Docker container. What is great is that no keys are copied to your Docker image. During the SSH connection, Docker simply uses your local SSH agent which keeps your key in memory. There is therefore no way for your key to end up in one of your Docker layers.
+The first method uses the [Docker Buildkit](https://docs.docker.com/develop/develop-images/build_enhancements/). This is a relatively new way of building Docker images with advantages such as better performance and more features. One of those new features is the `--ssh` flag, which allows you to forward your SSH agent to the Docker container. What is great is that no keys are copied to your Docker image. During the SSH connection, Docker simply uses your local SSH agent which keeps your key in memory. There is therefore no way for your key to be exposed in one of your Docker layers.
 
 These new features are currently available under an `experimental` flag. We are going to create a Dockerfile in the same location as the `package.json`, and build this Dockerfile with the following command:
 
 `DOCKER_BUILDKIT=1 docker build --ssh github="$HOME/.ssh/github" -t ssh-test .`
 
-First of all, the `DOCKER_BUILDKIT=1` flag enables the use of the new features. You can also add the following to the `/etc/docker/daemon.json` file so that you don't always need to type this part:
+First of all, the `DOCKER_BUILDKIT=1` flag enables the use of new features. You can also add the following to the `/etc/docker/daemon.json` file so that you don't always need to type this part:
 
 ```json
 {
@@ -127,9 +119,9 @@ RUN mkdir -p -m 0600 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 RUN ssh-agent sh -c 'echo $SSH_KEY | base64 -d | ssh-add - ; npm install'
 ```
 
-With `ARG SSH_KEY` we tell the builder that an environment variable will be passed to the `docker build` command that must only be available during build time. The other lines are all exactly the same, except for the last line where we use the `SSH_KEY` variable that we pass. We create a subshell where we first pass the `SSH_KEY` to `ssh-add` (we will actually pass a base64-encoded string to the Docker builder, so we decode it first). We do this using `standard input`, which means that we do not need to persist this key to disk, and the key is only kept in memory. This way, again the key will not leak to one of your cached Docker layers.
+With `ARG SSH_KEY`, we tell the builder that an environment variable will be passed to the `docker build` command that must only be available during build time. The other lines are all the same, except for the last line where we use the `SSH_KEY` variable that we pass. We create a subshell where we first pass the `SSH_KEY` to `ssh-add` (we will actually pass a base64-encoded string to the Docker builder, so we decode it first). We do this using `standard input`, which means that we do not need to persist this key to disk, and the key is only kept in memory. This way, again the key will not leak to one of your cached Docker layers.
 
-We now run `docker build` a little different. First, create a base64-encoded version of your key as follows:
+We now run `docker build` a little differently. First, create a base64-encoded version of your key as follows:
 
 ```bash
 key=$(cat ~/.ssh/github | base64)
@@ -139,10 +131,7 @@ Now, we pass this key to the Docker builder:
 
 `docker build --build-arg SSH_KEY=$key -t ssh-test .`
 
-Run the command and see your private git repository properly being installed. Run the command again and see how caching nicely speeds up your build.
+Run the command and see your private git repository correctly being installed. Rerun the command and see how caching nicely speeds up your build.
 
 ## Conclusion
-Always be careful not to store any secrets in your Docker layers. In this post I presented two different ways of safely using an SSH key in your Dockerfile. I would definitely recommend to try out to the BuildKit approach, as it brings some additional features and performance improvements as well.
-
-
-
+Always be careful not to store any secrets in your Docker layers. In this post I presented two different ways of safely using an SSH key in your Dockerfile. I would definitely recommend trying out to the BuildKit approach, as it brings some additional features and performance improvements as well.
