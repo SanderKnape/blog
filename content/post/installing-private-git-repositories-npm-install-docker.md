@@ -1,3 +1,11 @@
++++
+title = "Installing private Git repositories through npm install in Docker"
+author = "Sander Knape"
+date = 2019-06-17T13:30:02+02:00
+draft = false
+tags = ["docker", "git", "npm", "ssh", "buildkit"]
+categories = []
++++
 How do you properly use an SSH key in a Dockerfile? There are many ways to do it, including many ways to do it wrong. What you will want to prevent is that your ssh key ends up in one of your intermediate images or layers. These are the layers that Docker creates with pretty much every command in your Dockerfile. You may think that you properly clean up your secrets later in the Dockerfile, but the secret will then still be available in one of these layers.
 
 This is especially problematic when you build your Docker images in a (SaaS) CI/CD tool that supports caching. As the cache is uploaded to the system of your provider, it may very well happen that your secret ends up plain-text on their servers.
