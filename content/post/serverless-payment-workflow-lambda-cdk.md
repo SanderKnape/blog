@@ -13,7 +13,7 @@ For a while now I've been curious how one would implement a payment workflow on 
 
 There is no specific reason I built the workflow using Mollie - any other provider would have worked as well. From a quick glance at their documentation, the workflow would be pretty similar.
 
-In this blog post I'll go through the exact workflow that I built in AWS using S3, API Gateway, Lambda and DynamoDB. To see the full source code and get the application running yourself, I recommend checking out my [GitHub Repository](https://github.com/SanderKnape/serverless-payment-workflow-example) with the fully functioning code. The following image depicts the full architecture and workflow steps.
+In this blog post I'll go through the exact workflow that I built in AWS using S3, API Gateway, Lambda and DynamoDB. To see the full source code and get the application running yourself, I recommend checking out my [GitHub Repository](https://github.com/SanderKnape/serverless-payment-workflow) with the fully functioning code. The following image depicts the full architecture and workflow steps.
 
 ![Serverless Payment Workflow Architecture](/images/serverless-payment-workflow-architecture.png)
 
@@ -44,4 +44,4 @@ I took many, many shortcuts when building this workflow. The application only co
 
 ## Give it a try
 
-There is no such thing as too many Serverless example workflows. You learn the most by doing, so I would recommend giving this a try for yourself. To deploy this workflow, check out my [GitHub Repository](https://github.com/SanderKnape/serverless-payment-workflow-example) with instructions on how to get started.
+There is no such thing as too many Serverless example workflows. You learn the most by doing, so I would recommend giving this a try for yourself. To deploy this workflow, check out my [GitHub Repository](https://github.com/SanderKnape/serverless-payment-workflow) with instructions on how to get started.
