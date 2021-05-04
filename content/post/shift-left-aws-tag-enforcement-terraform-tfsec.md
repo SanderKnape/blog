@@ -53,7 +53,7 @@ Terraform will perform the following actions:
           + "Foo" = "Bar"
         }
       + tags_all                          = {
-          + "Application" = "Hello"
+          + "Application" = "Bazinga"
           + "Foo"         = "Bar"
         }
       + visibility_timeout_seconds        = 30
